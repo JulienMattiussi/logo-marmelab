@@ -1,0 +1,168 @@
+; Définition des constantes
+
+donne "estPlein 0
+
+donne "coteCarre 50
+
+donne "gauche 0
+donne "droite 1
+
+donne "ecartFormes :coteCarre / 6
+
+donne "nombreIterationsRemplissageCarre :coteCarre / 4
+
+donne "coteTriangle :coteCarre - 5
+donne "hypotenuseTriangle :coteTriangle - :coteTriangle / 5
+donne "nombreIterationsRemplissageTriangle :coteTriangle / 2
+
+; Tracé des formes
+
+pour carreOrientationGaucheDroite :sens
+    donne "angleA 45
+    donne "angleB 180 - :angleA
+    si (:sens = :gauche) [
+        donne "angleA 135
+        donne "angleB 180 - :angleA
+    ]
+    baisseCrayon
+    avance :coteCarre
+    droite :angleA
+    avance :coteCarre
+    droite :angleB
+    avance :coteCarre
+    droite :angleA
+    avance :coteCarre
+    fixeCap 0
+    leveCrayon
+    si (:estPlein > 0) [
+        baisseCrayon
+        deplacer 0 :coteCarre
+        repete :nombreIterationsRemplissageCarre [
+            deplacer 0 -2
+            droite :angleA
+            avance :coteCarre
+            deplacer 0 -2
+            gauche :angleB
+            avance :coteCarre
+        ]
+        deplacer 0 -2
+        fixeCap 0
+        leveCrayon
+    ]
+fin
+
+pour carreOrientationGauche
+    carreOrientationGaucheDroite :gauche
+fin
+
+pour carreOrientationDroite
+    carreOrientationGaucheDroite :droite
+fin
+
+pour carreOrientationHaut
+    baisseCrayon
+    droite -45
+    repete 4 [
+        avance :coteCarre
+        droite 90
+    ]
+    fixeCap 0
+    leveCrayon
+fin
+
+pour triangleOrientationGaucheDroite :sens
+    donne "angleA -135
+    donne "angleB -110
+    donne "angleC 225
+    si (:sens = :gauche) [
+        donne "angleA 135
+        donne "angleB 110
+        donne "angleC 135
+    ]
+    baisseCrayon
+    avance :coteTriangle
+    droite :angleA
+    avance :coteTriangle
+    droite :angleB
+    avance :hypotenuseTriangle
+    fixeCap 0
+    leveCrayon
+    si (:estPlein > 0) [
+        baisseCrayon
+        deplacer 0 :coteTriangle
+        donne "traitCourant :coteTriangle
+        repete :nombreIterationsRemplissageTriangle [
+            donne "traitCourant :traitCourant - 1.8
+            droite :angleC
+            avance :traitCourant
+            leveCrayon
+            droite 180
+            avance :traitCourant
+            deplacer 0 -2
+            baisseCrayon
+        ]
+        deplacer 0 -2
+        fixeCap 0
+        leveCrayon
+    ]
+fin
+
+pour triangleGauche
+    triangleOrientationGaucheDroite :gauche
+fin
+
+pour triangleDroite
+    triangleOrientationGaucheDroite :droite
+fin
+
+; Outils
+
+pour deplacer :x :y
+    fixeCap 0
+    avance :y
+    droite 90
+    avance :x
+    fixeCap 0
+fin
+
+; Fonction principale
+
+pour marmelab
+  videEcran
+  fixeCouleurCrayon [000 000 255]
+  carreOrientationGauche
+  deplacer 0 :coteCarre + :ecartFormes
+  carreOrientationGauche
+  donne "valeurMouvementA :coteCarre - :ecartFormes
+  donne "valeurMouvementB :ecartFormes - :coteCarre
+  deplacer :valeurMouvementA :valeurMouvementB
+  carreOrientationGauche
+  donne "valeurMouvementB :ecartFormes + :ecartFormes / 2 - :coteCarre
+  deplacer :valeurMouvementA :valeurMouvementB
+  carreOrientationDroite
+  deplacer :valeurMouvementA :valeurMouvementA
+  carreOrientationDroite
+  deplacer 0 moins :coteCarre - :ecartFormes
+  carreOrientationDroite
+  fixeCouleurCrayon [120 120 120]
+  donne "valeurMouvementB :coteCarre * 2 + :ecartFormes * 2
+  deplacer moins :ecartFormes / 2 :valeurMouvementB
+  carreOrientationHaut
+  donne "valeurMouvementB :ecartFormes - :coteCarre
+  deplacer :valeurMouvementB :valeurMouvementB
+  carreOrientationHaut
+  deplacer :valeurMouvementB :valeurMouvementA
+  carreOrientationHaut
+  fixeCouleurCrayon [0 0 0]
+  donne "valeurMouvementA :ecartFormes / 2
+  donne "valeurMouvementB :ecartFormes / 2 - :coteCarre * 2 - :ecartFormes * 2
+  deplacer :valeurMouvementA :valeurMouvementB
+  triangleGauche
+  donne "valeurMouvementB :coteCarre * 2 - :ecartFormes * 2.5
+  deplacer :valeurMouvementB 0
+  triangleDroite
+fin
+
+montreTortue
+marmelab
+cacheTortue
